@@ -201,12 +201,12 @@ public class BenchmarkService {
         analysisResult.getResultQuestionList().get(analysisResult.getResultQuestionList().size() - 1).setEndIndex((int) metadataRow.getLastCellNum() - 1);
     }
 
-    public FinalResult analyse(MultipartFile multipartFile) {
+    public Data analyse(MultipartFile multipartFile) {
         File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         List<NotationQuestion> notationQuestions = new ArrayList<>();
         NotationQuestion notationQuestion = null;
-        List<Subject> subjects = null;
-        FinalResult finalResult = new FinalResult();
+        List<Subject> subjects;
+        Data data = null;
         try {
             FileUtils.writeByteArrayToFile(file, multipartFile.getBytes());
             Workbook workbook = new XSSFWorkbook(file);
@@ -250,10 +250,12 @@ public class BenchmarkService {
             }
             subjects = analyseResponses(file, notationQuestions);
             calculateSum(subjects);
-            calculateNoteByQuestion(subjects);
-            finalResult.setIndividualStatistics(calculateNoteByQuestion(subjects));
-            finalResult.setSubSectionStatistics(calculateSubsectionNotes(subjects));
-            finalResult.setSectionStatistics(calculateSectionNotes(subjects));
+
+            Map<String, List<Subject>> individualStatistics = calculateNoteByQuestion(subjects);
+            Map<String, Map<String, IntSummaryStatistics>> subSectionStatistics = calculateSubsectionNotes(individualStatistics);
+            Map<String, Map<String, IntSummaryStatistics>> sectionStatistics = calculateSectionNotes(individualStatistics);
+
+            data = mapToData(individualStatistics, subSectionStatistics, sectionStatistics);
             workbook.close();
         } catch (IOException | InvalidFormatException exception) {
             log.error("error saving notation file", exception);
@@ -261,7 +263,50 @@ public class BenchmarkService {
             log.info("File " + file.getName() + " deleted : " + file.delete());
         }
 
-        return finalResult;
+        return data;
+    }
+
+    private Data mapToData(Map<String, List<Subject>> individualStatistics, Map<String, Map<String, IntSummaryStatistics>> subSectionStatistics, Map<String, Map<String, IntSummaryStatistics>> sectionStatistics) {
+        Data data = new Data();
+        data.setIndividualStatistics(individualStatistics);
+        List<Company> dataSubsection = subSectionStatistics.entrySet()
+                .stream()
+                .map(stringMapEntry ->
+                        Company.builder()
+                                .name(stringMapEntry.getKey())
+                                .sections(
+                                        stringMapEntry.getValue()
+                                                .entrySet()
+                                                .stream()
+                                                .map(subSectionData -> Section.builder()
+                                                        .name(subSectionData.getKey())
+                                                        .average(subSectionData.getValue().getAverage())
+                                                        .build())
+                                                .collect(Collectors.toList())
+                                )
+                                .build())
+                .collect(Collectors.toList());
+        data.setSubSectionStatistics(dataSubsection);
+        List<Company> dataSections = sectionStatistics.entrySet()
+                .stream()
+                .map(stringMapEntry ->
+                        Company.builder()
+                                .name(stringMapEntry.getKey())
+                                .sections(
+                                        stringMapEntry.getValue()
+                                                .entrySet()
+                                                .stream()
+                                                .map(sectionData -> Section.builder()
+                                                        .name(sectionData.getKey())
+                                                        .average(sectionData.getValue().getAverage())
+                                                        .build())
+                                                .collect(Collectors.toList())
+                                )
+                                .build())
+                .collect(Collectors.toList());
+        data.setSectionStatistics(dataSections);
+
+        return data;
     }
 
     private void calculateSum(List<Subject> subjects) {
@@ -272,18 +317,28 @@ public class BenchmarkService {
         }));
     }
 
-    private Map<String, IntSummaryStatistics> calculateSubsectionNotes(List<Subject> subjects) {
-        return subjects.stream()
-                .map(Subject::getQuestions)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(NotationQuestion::getSubSection, Collectors.summarizingInt(NotationQuestion::getNote)));
+    private Map<String, Map<String, IntSummaryStatistics>> calculateSubsectionNotes(Map<String, List<Subject>> individualStatistics) {
+        return individualStatistics.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().stream()
+                                .map(Subject::getQuestions)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.groupingBy(NotationQuestion::getSubSection, Collectors.summarizingInt(NotationQuestion::getNote)))
+                ));
     }
 
-    private Map<String, IntSummaryStatistics> calculateSectionNotes(List<Subject> subjects) {
-        return subjects.stream()
-                .map(Subject::getQuestions)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(NotationQuestion::getSection, Collectors.summarizingInt(NotationQuestion::getNote)));
+    private Map<String, Map<String, IntSummaryStatistics>> calculateSectionNotes(Map<String, List<Subject>> individualStatistics) {
+        return individualStatistics.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().stream()
+                                .map(Subject::getQuestions)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.groupingBy(NotationQuestion::getSection, Collectors.summarizingInt(NotationQuestion::getNote)))
+                ));
     }
 
     private Map<String, List<Subject>> calculateNoteByQuestion(List<Subject> subjects) {

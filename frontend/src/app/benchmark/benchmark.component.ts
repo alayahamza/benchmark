@@ -13,7 +13,10 @@ export class BenchmarkComponent implements OnInit {
   baseHref;
 
   displayUploadResultButton = true;
-  chartData: any;
+  sectionChartData = [];
+  subSectionChartData = [];
+  sectionChartLabels = [];
+  subSectionChartLabels = [];
   finalResult: FinalResult;
 
   constructor(@Inject(APP_BASE_HREF) baseHref: string, private _benchmarkService: BenchmarkService) {
@@ -26,9 +29,34 @@ export class BenchmarkComponent implements OnInit {
   uploadFile(event) {
     this._benchmarkService.uploadFile(event.target.files.item(0)).subscribe((data) => {
       this.finalResult = data;
-      this.chartData = data.sectionStatistics;
+      this.extractSectionData();
+      this.extractSubSectionData();
       this.displayUploadResultButton = false;
     }, error => console.error(error));
+  }
+
+  private extractSectionData() {
+    this.sectionChartData = [];
+    this.finalResult.sectionStatistics.forEach(company => {
+      let averages = [];
+      company.sections.forEach(section => {
+        averages.push(section.average);
+      });
+      this.sectionChartData.push({data: averages, label: company.name});
+    });
+    this.finalResult.sectionStatistics[0].sections.forEach(section => this.sectionChartLabels.push(section.name));
+  }
+
+  private extractSubSectionData() {
+    this.subSectionChartData = [];
+    this.finalResult.subSectionStatistics.forEach(company => {
+      let averages = [];
+      company.sections.forEach(section => {
+        averages.push(section.average);
+      });
+      this.subSectionChartData.push({data: averages, label: company.name});
+    });
+    this.finalResult.subSectionStatistics[0].sections.forEach(section => this.subSectionChartLabels.push(section.name));
   }
 
   reset() {

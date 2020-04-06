@@ -1,5 +1,7 @@
+import {Company} from "./company";
+
 export class FinalResult {
   individualStatistics;
-  subSectionStatistics;
-  sectionStatistics;
+  subSectionStatistics: [Company];
+  sectionStatistics: [Company];
 }

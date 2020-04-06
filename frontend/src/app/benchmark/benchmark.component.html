@@ -20,6 +20,7 @@
   <br>
   <br>
   <div id="default-analysis" *ngIf="!displayUploadResultButton">
-    <app-radar-chart [data]="chartData"></app-radar-chart>
+    <app-radar-chart [chartData]="sectionChartData" [chartLabels]="sectionChartLabels"></app-radar-chart>
+    <app-radar-chart [chartData]="subSectionChartData" [chartLabels]="subSectionChartLabels"></app-radar-chart>
   </div>
 </div>

@@ -1,6 +1,6 @@
 package com.alenia.benchmark.controller;
 
-import com.alenia.benchmark.model.FinalResult;
+import com.alenia.benchmark.model.Data;
 import com.alenia.benchmark.service.BenchmarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class BenchmarkController {
     }
 
     @PostMapping(value = "benchmark")
-    public ResponseEntity<FinalResult> uploadNotationFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Data> uploadNotationFile(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok().body(benchmarkService.analyse(file));
     }
 }

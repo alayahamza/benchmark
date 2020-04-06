@@ -5,11 +5,11 @@ import {BenchmarkComponent} from "./benchmark/benchmark.component";
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'benchmark',
+    path: '', redirectTo: 'home',
     pathMatch: 'full'
   },
 
-  {path: 'benchmark', component: BenchmarkComponent}
+  {path: 'home', component: BenchmarkComponent}
 ];
 
 @NgModule({

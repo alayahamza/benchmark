@@ -84,3 +84,4 @@ testem.log
 Thumbs.db
 
 /frontend/node_modules/
+/frontend/dist/

@@ -18,7 +18,7 @@ public class BenchmarkApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*").allowedMethods("POST", "GET", "PUT", "PATCH", "DELETE");
+                registry.addMapping("/**").allowedOrigins("https://alayahamza.github.io/","*").allowedMethods("POST", "GET", "PUT", "PATCH", "DELETE");
             }
         };
     }

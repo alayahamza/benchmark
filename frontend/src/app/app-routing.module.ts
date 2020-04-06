@@ -5,7 +5,7 @@ import {BenchmarkComponent} from "./benchmark/benchmark.component";
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'home',
+    path: '', redirectTo: '/home',
     pathMatch: 'full'
   },
 

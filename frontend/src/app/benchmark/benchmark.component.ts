@@ -13,11 +13,13 @@ export class BenchmarkComponent implements OnInit {
   baseHref;
 
   displayUploadResultButton = true;
+  displayCharts = false;
   sectionChartData = [];
   subSectionChartData = [];
   sectionChartLabels = [];
   subSectionChartLabels = [];
   finalResult: FinalResult;
+  displayProgressBar = false;
 
   constructor(@Inject(APP_BASE_HREF) baseHref: string, private _benchmarkService: BenchmarkService) {
     this.baseHref = baseHref;
@@ -27,11 +29,14 @@ export class BenchmarkComponent implements OnInit {
   }
 
   uploadFile(event) {
+    this.displayProgressBar = true;
+    this.displayUploadResultButton = false;
     this._benchmarkService.uploadFile(event.target.files.item(0)).subscribe((data) => {
       this.finalResult = data;
       this.extractSectionData();
       this.extractSubSectionData();
-      this.displayUploadResultButton = false;
+      this.displayProgressBar = false;
+      this.displayCharts = true;
     }, error => console.error(error));
   }
 
@@ -61,5 +66,11 @@ export class BenchmarkComponent implements OnInit {
 
   reset() {
     this.displayUploadResultButton = true;
+    this.displayProgressBar = false;
+    this.displayCharts = false;
+    this.sectionChartData = [];
+    this.subSectionChartData = [];
+    this.sectionChartLabels = [];
+    this.subSectionChartLabels = [];
   }
 }

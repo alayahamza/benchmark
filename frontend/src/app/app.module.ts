@@ -11,6 +11,8 @@ import {BenchmarkComponent} from './benchmark/benchmark.component';
 import {FormsModule} from "@angular/forms";
 import {APP_BASE_HREF} from "@angular/common";
 import {environment} from "../environments/environment";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import {environment} from "../environments/environment";
     HttpClientModule,
     ChartsModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MatProgressBarModule
   ],
   providers: [
     BenchmarkService,

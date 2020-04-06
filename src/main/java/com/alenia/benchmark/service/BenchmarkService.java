@@ -33,6 +33,7 @@ public class BenchmarkService {
     private static final Integer QUESTION_START_POSITION = 8;
     private static final Integer RESPONSES_POSITION = 1;
     private static final Integer SUBJECT_RESPONDENT_ID_CELL_INDEX = 0;
+    private static final Integer SUBJECT_RESPONDENT_COMPANY_CELL_INDEX = 8;
 
     public List<Subject> analyseResponses(File file, List<NotationQuestion> notationQuestions) {
         List<Subject> subjects = new ArrayList<>();
@@ -64,6 +65,7 @@ public class BenchmarkService {
             if (row.getRowNum() > RESPONSES_POSITION) {
                 Subject subject = new Subject();
                 subject.setId(df.format(row.getCell(SUBJECT_RESPONDENT_ID_CELL_INDEX).getNumericCellValue()));
+                subject.setCompany(row.getCell(SUBJECT_RESPONDENT_COMPANY_CELL_INDEX).getStringCellValue());
                 subject.setQuestions(new ArrayList<>());
                 analysisResult.getResultQuestionList().forEach(resultQuestion -> {
                     Integer startIndex = resultQuestion.getStartIndex();
@@ -247,8 +249,9 @@ public class BenchmarkService {
                 }
             }
             subjects = analyseResponses(file, notationQuestions);
+            calculateSum(subjects);
             calculateNoteByQuestion(subjects);
-            finalResult.setIndividualStatistics(subjects);
+            finalResult.setIndividualStatistics(calculateNoteByQuestion(subjects));
             finalResult.setSubSectionStatistics(calculateSubsectionNotes(subjects));
             finalResult.setSectionStatistics(calculateSectionNotes(subjects));
             workbook.close();
@@ -259,6 +262,14 @@ public class BenchmarkService {
         }
 
         return finalResult;
+    }
+
+    private void calculateSum(List<Subject> subjects) {
+        subjects.forEach(subject -> subject.getQuestions().forEach(notationQuestion -> {
+            notationQuestion.setNote(notationQuestion.getResponses().stream()
+                    .mapToInt(Response::getNote)
+                    .sum());
+        }));
     }
 
     private Map<String, IntSummaryStatistics> calculateSubsectionNotes(List<Subject> subjects) {
@@ -275,11 +286,8 @@ public class BenchmarkService {
                 .collect(Collectors.groupingBy(NotationQuestion::getSection, Collectors.summarizingInt(NotationQuestion::getNote)));
     }
 
-    private void calculateNoteByQuestion(List<Subject> subjects) {
-        subjects.forEach(subject -> subject.getQuestions().forEach(notationQuestion -> {
-            notationQuestion.setNote(notationQuestion.getResponses().stream()
-                    .mapToInt(Response::getNote)
-                    .sum());
-        }));
+    private Map<String, List<Subject>> calculateNoteByQuestion(List<Subject> subjects) {
+        return subjects.stream()
+                .collect(Collectors.groupingBy(Subject::getCompany, Collectors.toList()));
     }
 }

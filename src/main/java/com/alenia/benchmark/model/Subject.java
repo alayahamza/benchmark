@@ -13,5 +13,6 @@ import java.util.List;
 @Builder
 public class Subject {
     private String id;
+    private String company;
     private List<NotationQuestion> questions;
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class FinalResult {
-    private List<Subject> individualStatistics;
+    private Map<String, List<Subject>> individualStatistics;
     private Map<String, IntSummaryStatistics> subSectionStatistics;
     private Map<String, IntSummaryStatistics> sectionStatistics;
 }

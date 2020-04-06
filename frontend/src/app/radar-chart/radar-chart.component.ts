@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {from, of, zip} from "rxjs";
+import {groupBy, mergeMap, toArray} from "rxjs/operators";
 
 @Component({
   selector: 'app-radar-chart',
@@ -24,6 +26,21 @@ export class RadarChartComponent implements OnInit {
     Object.keys(this.data).forEach((key) => {
       this.arr.push(this.data[key].average);
     })
+    // let observable = from(this.arr).pipe(
+    //   groupBy(element => element.company),
+    //   mergeMap(group => group.pipe(toArray()))
+    // );
+    // observable.subscribe(val => console.log(val));
+    // console.log(this.arr)
+    // from(this.arr)
+    //   .pipe(
+    //     groupBy(
+    //       element => element.company,
+    //       e => e.name
+    //     ),
+    //     mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    //   )
+    //   .subscribe(console.log);
     this.radarChartData = [
       {data: this.arr, label: 'SG'}
       // ,

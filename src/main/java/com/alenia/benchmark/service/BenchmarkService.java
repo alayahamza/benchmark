@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class NotationService {
+public class BenchmarkService {
 
     private static final Integer RESPONSE_SHEET_POSITION = 1;
     private static final Integer METADATA_ROW_POSITION = 0;

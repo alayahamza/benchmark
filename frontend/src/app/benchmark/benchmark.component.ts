@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {BenchmarkService} from "../core/benchmark.service";
 import {FinalResult} from "../core/model/final-result";
+import {APP_BASE_HREF} from "@angular/common";
 
 @Component({
   selector: 'app-benchmark',
@@ -9,11 +10,14 @@ import {FinalResult} from "../core/model/final-result";
 })
 export class BenchmarkComponent implements OnInit {
 
+  baseHref;
+
   displayUploadResultButton = true;
   chartData: any;
-  finalResult : FinalResult;
+  finalResult: FinalResult;
 
-  constructor(private _benchmarkService: BenchmarkService) {
+  constructor(@Inject(APP_BASE_HREF) baseHref: string, private _benchmarkService: BenchmarkService) {
+    this.baseHref = baseHref;
   }
 
   ngOnInit(): void {
@@ -24,7 +28,7 @@ export class BenchmarkComponent implements OnInit {
       this.finalResult = data;
       this.chartData = data.sectionStatistics;
       this.displayUploadResultButton = false;
-    },error => console.error(error));
+    }, error => console.error(error));
   }
 
   reset() {

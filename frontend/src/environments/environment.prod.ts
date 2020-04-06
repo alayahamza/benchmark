@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  url: 'https://alenia-benchmark.herokuapp.com'
+  url: 'https://alenia-benchmark.herokuapp.com',
+  baseHref:'/benchmark/'
 };

@@ -30,8 +30,9 @@ $frontend-theme: mat-light-theme($frontend-primary, $frontend-accent, $frontend-
 @import '~bootstrap/scss/bootstrap';
 
 .button {
-  background-color: $gray-800;
-  color: white;
+  border: solid 1px $gray-800;
+  background-color: white;
+  color: $gray-800;
 }
 
 i {

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {RadialChartOptions} from "chart.js";
 
 @Component({
   selector: 'app-radar-chart',
@@ -8,30 +9,15 @@ import {Component, Input, OnInit} from '@angular/core';
 export class RadarChartComponent implements OnInit {
   @Input() public chartLabels;
   @Input() public chartData;
-
+  public radarChartOptions: RadialChartOptions = {
+    responsive: true,
+  };
   public radarChartType = 'radar';
-
-  // arr = [];
 
   constructor() {
   }
 
   ngOnInit(): void {
-    // this.initChart();
-    console.log(this.chartLabels);
-    console.log(this.chartData);
   }
 
-  initChart() {
-    // this.radarChartLabels = Object.keys(this.data);
-    // Object.keys(this.data).forEach((key) => {
-    //   this.arr.push(this.data[key].average);
-    // });
-    // this.radarChartData = [
-    //   {data: this.arr, label: 'SG'}
-    // ,
-    // {data: [90, 150, 200, 45, 210], label: 'CACIB'},
-    // {data: [100, 160, 220, 55, 220], label: 'BNP'}
-    // ];
-  }
 }

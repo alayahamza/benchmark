@@ -13,6 +13,7 @@ import {APP_BASE_HREF} from "@angular/common";
 import {environment} from "../environments/environment";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatButtonModule
   ],
   providers: [
     BenchmarkService,

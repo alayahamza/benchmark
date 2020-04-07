@@ -11,6 +11,7 @@ import {APP_BASE_HREF} from "@angular/common";
 export class BenchmarkComponent implements OnInit {
 
   baseHref;
+  awake: boolean;
 
   displayUploadResultButton = true;
   displayCharts = false;
@@ -26,6 +27,7 @@ export class BenchmarkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isAwake();
   }
 
   uploadFile(event) {
@@ -62,6 +64,12 @@ export class BenchmarkComponent implements OnInit {
       this.subSectionChartData.push({data: averages, label: company.name});
     });
     this.finalResult.subSectionStatistics[0].sections.forEach(section => this.subSectionChartLabels.push(section.name));
+  }
+
+  isAwake() {
+    this._benchmarkService.isAwake().subscribe((data) => {
+      this.awake = data;
+    })
   }
 
   reset() {

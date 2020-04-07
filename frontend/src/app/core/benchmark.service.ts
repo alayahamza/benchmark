@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {FinalResult} from "./model/final-result";
 import {environment} from "../../environments/environment";
 
-const baseUrl = environment.url+'/api/v1';
+const baseUrl = environment.url + '/api/v1';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,10 @@ export class BenchmarkService {
 
     const formData: FormData = new FormData();
     formData.append('file', file);
-    return this.HTTP_CLIENT.post<FinalResult>(baseUrl + '/files/benchmark', formData);
+    return this.HTTP_CLIENT.post<FinalResult>(baseUrl + '/benchmark', formData);
+  }
+
+  isAwake(): Observable<boolean> {
+    return this.HTTP_CLIENT.get<boolean>(baseUrl + '/awake');
   }
 }

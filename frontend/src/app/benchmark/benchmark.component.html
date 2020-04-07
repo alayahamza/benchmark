@@ -2,6 +2,7 @@
   <div class="container">
     <img class="navbar-brand" src="{{baseHref}}assets/logo_Alenia.png" id="logo" alt="logo">
     <button *ngIf="!displayUploadResultButton" (click)="reset()" class="btn"><i class="fa fa-refresh"></i></button>
+    <button *ngIf="!awake" class="btn"><i class="fa fa-exclamation-circle"></i></button>
   </div>
 </nav>
 <br>
